@@ -1,0 +1,28 @@
+name: ci
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      # Secrets can't be used in `if:`, so expose "is there a key?" as a plain flag.
+      HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+      - run: uv sync --frozen
+      - run: uv run ruff check .
+      # Postgres (ParadeDB) from docker-compose.yml; the init SQL is mounted from the checkout.
+      - name: start Postgres
+        run: docker compose up -d --wait db
+      # make test = make data (PDFs + eval set) + make ingest (first run downloads the
+      # embedding model) + pytest. The model API is always faked: no key needed.
+      - run: make test
+      - name: eval smoke run (retrieval, no API key)
+        run: uv run --env-file .env python -m evals.run --split dev --limit 5
+      # Only with an ANTHROPIC_API_KEY repo secret: 5 real answers per push (costs money).
+      - name: eval smoke run (answers)
+        if: env.HAS_KEY == 'true'
+        run: uv run --env-file .env python -m evals.run --split dev --answers --limit 5
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

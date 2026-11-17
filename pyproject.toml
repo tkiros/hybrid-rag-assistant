@@ -1,0 +1,29 @@
+[project]
+name = "hybrid-rag-assistant"
+version = "0.1.0"
+description = "Hybrid BM25 + vector search assistant with checked citations and per-type retrieval evals"
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic>=2.9",
+    "fastapi>=0.115",
+    "fastembed>=0.9.1",
+    "fpdf2>=2.9.0",
+    "mcp>=2.3",
+    "psycopg[binary]>=3.2",
+    "pydantic>=2.9",
+    "pypdfium2>=5.15.2",
+    "uvicorn[standard]>=0.32",
+]
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.8"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
