@@ -215,7 +215,7 @@ These are deviations from the build guide or choices that change results. Each o
 - **Retrieval is single-pass,** so two-chunk questions often miss their second chunk.
 - **Operations are portfolio-scale.** There is one database connection per search, re-indexing works per document rather than per page, and the embedding model downloads on first use (ingest fails without network).
 - **pg_search is AGPL-3.0.** That's fine for a public portfolio, but it matters before selling this to a client.
-- **CI and the app image have not run yet.** The GitHub Actions workflow hasn't run on GitHub, the app container hasn't been built, and the MCP server hasn't been used from Claude Code or Claude Desktop (only from the `mcp` SDK client in tests).
+- **The app image has not been built yet.** The GitHub Actions workflow passes on GitHub (ruff, 154 tests, retrieval eval smoke run), but the app container hasn't been built, and the MCP server hasn't been used from Claude Code or Claude Desktop (only from the `mcp` SDK client in tests).
 
 ## Repository map
 
